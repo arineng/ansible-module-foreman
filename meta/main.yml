@@ -1,2 +1,12 @@
 # This is here to assist in Ansible Galaxy fetching this repository
 # as a needed dependancy.
+---
+galaxy_info:
+  author: Testing
+  description: Ansible Foreman Library Modules
+  company: N/A 
+  license: N/A 
+  min_ansible_version: 1.2
+  galaxy_tags: []
+
+dependencies: []
