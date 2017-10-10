@@ -104,8 +104,9 @@ def ensure(module):
 
     cmp_keys = ['host', 'port', 'tls', 'base_dn', 'attr_login', 'attr_firstname',
                 'attr_lastname', 'attr_mail', 'attr_photo', 'onthefly_register',
-                'usergroup_sync', 'ldap_filter', 'use_netgroups']
-    keys = cmp_keys + ['groups_base', 'server_type', 'account', 'account_password']
+                'ldap_filter']
+    keys = cmp_keys + ['groups_base', 'server_type', 'account',
+                       'usergroup_sync', 'account_password', 'use_netgroups']
 
     theforeman = Foreman(hostname=foreman_host,
                          port=foreman_port,
