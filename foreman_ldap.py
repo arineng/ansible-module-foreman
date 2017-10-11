@@ -103,10 +103,9 @@ def ensure(module):
     foreman_ssl = module.params['foreman_ssl']
 
     cmp_keys = ['host', 'port', 'tls', 'base_dn', 'attr_login', 'attr_firstname',
-                'attr_lastname', 'attr_mail', 'attr_photo', 'onthefly_register',
-                'ldap_filter']
-    keys = cmp_keys + ['groups_base', 'server_type', 'account',
-                       'usergroup_sync', 'account_password', 'use_netgroups']
+                'attr_lastname', 'attr_mail', 'attr_photo', 'ldap_filter']
+    keys = cmp_keys + ['groups_base', 'server_type', 'account', 'use_netgroups',
+                       'usergroup_sync', 'account_password', 'onthefly_register']
 
     theforeman = Foreman(hostname=foreman_host,
                          port=foreman_port,
