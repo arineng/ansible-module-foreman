@@ -89,7 +89,7 @@ def ensure():
     state = module.params['state']
 
     try:
-        os = theforeman.search_operatingsystem(data=dict(name=os_name))
+        os = theforeman.search_operatingsystem(data=dict(description=os_name))
     except ForemanError as e:
         module.fail_json(msg='Could not search operatingsystem: {0}'.format(e.message))
 
