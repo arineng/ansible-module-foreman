@@ -148,6 +148,18 @@ def get_resources(resource_type, resource_func, resource_specs, search_field='na
                 resource_type=resource_type, name=item, error=e.message))
     return result
 
+def get_location_ids(module, theforeman, locations):
+    result = []
+    for i in range(0, len(locations)):
+        try:
+            location = theforeman.search_location(data={'name':locations[i]})
+            if not location:
+                module.fail_json('Could not find Location {0}'.format(locations[i]))
+            result.append(location.get('id'))
+        except ForemanError as e:
+            module.fail_json('Could not get Locations: {0}'.format(e.message))
+    return result
+
 
 def ensure():
     audit_comment = module.params['audit_comment']
@@ -155,6 +167,7 @@ def ensure():
     locked = module.params['locked']
     name = module.params['name']
     operatingsystems = module.params['operatingsystems']
+    locations = module.params['locations']
     state = module.params['state']
     snippet = module.params['snippet']
     template = module.params['template']
@@ -181,6 +194,9 @@ def ensure():
             config_template = theforeman.get_config_template(id=config_template.get('id'))
     except ForemanError as e:
         module.fail_json(msg='Could not get config template: {0}'.format(e.message))
+
+    if locations:
+        data['location_ids'] = get_location_ids(module, theforeman, locations)
 
     if state == 'absent':
         if config_template:
@@ -248,6 +264,7 @@ def main():
             audit_comment=dict(type='str', required=False),
             name=dict(type='str', required=True),
             locked=dict(type='bool', default=False),
+            locations=dict(type='list', required=False),
             operatingsystems=dict(type='list', required=False),
             template=dict(type='str', required=False),
             template_file=dict(type='str', required=False),
