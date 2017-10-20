@@ -232,7 +232,7 @@ def ensure(module):
          data['organization_ids'] = get_organization_ids(module, theforeman, organizations)
 
     if locations:
-         data['location_ids'] = get_location_ids(module, theforeman, locations)    
+         data['location_ids'] = get_location_ids(module, theforeman, locations)
 
 
     for key in ['dns_primary', 'dns_secondary', 'gateway', 'ipam', 'boot_mode', 'mask', 'network', 'network_address',
@@ -267,7 +267,8 @@ def ensure(module):
             except ForemanError as e:
                 module.fail_json(msg='Could not delete subnet: {0}'.format(e.message))
 
-        if not all(data[key] == subnet.get(key) for key in data):
+        #if not all(data[key] == subnet.get(key) for key in data):
+        if not all(data[key] == subnet.get(key, data[key]) for key in data.keys()):
             try:
                 subnet = theforeman.update_subnet(id=subnet.get('id'), data=data)
                 return True, subnet
