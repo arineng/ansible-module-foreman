@@ -89,11 +89,25 @@ else:
     foremanclient_found = True
 
 
+def get_location_ids(module, theforeman, locations):
+    result = []
+    for i in range(0, len(locations)):
+        try:
+            location = theforeman.search_location(data={'name':locations[i]})
+            if not location:
+                module.fail_json('Could not find Location {0}'.format(locations[i]))
+            result.append(location.get('id'))
+        except ForemanError as e:
+            module.fail_json('Could not get Locations: {0}'.format(e.message))
+    return result
+
+
 def ensure():
     name = module.params['name']
     layout = module.params['layout']
     state = module.params['state']
     os_family = module.params['os_family']
+    locations = module.params['locations']
 
     data = dict(name=name)
 
@@ -101,6 +115,9 @@ def ensure():
         ptable = theforeman.search_partition_table(data=data)
     except ForemanError as e:
         module.fail_json(msg='Could not get partition table: {0}'.format(e.message))
+
+    if locations:
+        data['location_ids'] = get_location_ids(module, theforeman, locations)
 
     data['layout'] = layout
     data['os_family'] = os_family
@@ -145,6 +162,7 @@ def main():
             name=dict(type='str', required=True),
             layout=dict(type='str', required=False),
             os_family=dict(type='str', required=False),
+            locations=dict(type='list', required=False),
             state=dict(type='str', default='present', choices=['present', 'absent']),
             foreman_host=dict(type='str', default='127.0.0.1'),
             foreman_port=dict(type='str', default='443'),
