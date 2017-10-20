@@ -42,7 +42,7 @@ options:
     required: false
   locations:
     description: List of locations the domain should be assigned to
-    required: false  
+    required: false
   foreman_host:
     description: Hostname or IP address of Foreman system
     required: false
@@ -141,6 +141,7 @@ def get_location_ids(module, theforeman, locations):
             module.fail_json('Could not get Locations: {0}'.format(e.message))
     return result
 
+
 def ensure(module):
     global theforeman
 
@@ -196,7 +197,7 @@ def ensure(module):
             except ForemanError as e:
                 module.fail_json(msg='Could not delete domain: {0}'.format(e.message))
 
-        if not all(data[key] == domain[key] for key in data):
+        if not all(data[key] == domain.get(key, data[key]) for key in data.keys()):
             try:
                 domain = theforeman.update_domain(id=domain.get('id'), data=data)
                 return True, domain
