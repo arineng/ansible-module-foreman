@@ -107,6 +107,7 @@ def ensure():
     layout = module.params['layout']
     state = module.params['state']
     os_family = module.params['os_family']
+    template_file = module.params['template_file']
     locations = module.params['locations']
 
     data = dict(name=name)
@@ -119,7 +120,18 @@ def ensure():
     if locations:
         data['location_ids'] = get_location_ids(module, theforeman, locations)
 
-    data['layout'] = layout
+    if not layout and not template_file:
+        module.fail_json(msg='Either layout or template_file must be defined')
+    elif layout and template_file:
+        module.fail_json(msg='Only one of either layout or template_file must be defined')
+    elif layout:
+        data['layout'] = layout
+    else:
+        try:
+            with open(template_file) as f:
+                data['layout'] = f.read()
+        except IOError as e:
+            module.fail_json(msg='Could not open file {0}: {1}'.format(template_file, e.message))
     data['os_family'] = os_family
 
     if not ptable and state == 'present':
@@ -161,6 +173,7 @@ def main():
         argument_spec=dict(
             name=dict(type='str', required=True),
             layout=dict(type='str', required=False),
+            template_file=dict(type='str', required=False),
             os_family=dict(type='str', required=False),
             locations=dict(type='list', required=False),
             state=dict(type='str', default='present', choices=['present', 'absent']),
