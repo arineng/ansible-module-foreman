@@ -153,7 +153,7 @@ def ensure():
             ptable = theforeman.get_partition_table(id=ptable.get('id'))
         except ForemanError as e:
             module.fail_json(msg='Could not get partition table to update: {0}'.format(e.message))
-        if ptable.get('layout') == layout:
+        if ptable.get('layout') == layout or ptable.get('layout') == data['layout']:
             return False, ptable
         else:
             try:
