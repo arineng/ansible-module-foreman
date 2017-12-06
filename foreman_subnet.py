@@ -239,6 +239,10 @@ def ensure(module):
                 'vlanid']:
         if key in module.params:
             data[key] = module.params[key]
+    if module.params['network_type']:
+        data['network_type'] = module.params['network_type']
+    if module.params['cidr']:
+        data['cidr'] = module.params['cidr']
     if 'ip_from' in module.params:
         data['from'] = module.params['ip_from']
     if 'ip_to' in module.params:
@@ -291,6 +295,8 @@ def main():
             gateway=dict(type='str', required=False),
             name=dict(type='str', required=True),
             network=dict(type='str', required=False),
+            network_type=dict(type='str', required=False),
+            cidr=dict(type='str', required=False),
             mask=dict(type='str', required=False),
             ipam=dict(type='str', required=False, choices=['DHCP', 'Internal DB', 'None']),
             boot_mode=dict(type='str', required=False, choices=['DHCP', 'Static'], default='DHCP'),
