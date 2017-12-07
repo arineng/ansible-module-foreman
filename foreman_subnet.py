@@ -235,10 +235,11 @@ def ensure(module):
          data['location_ids'] = get_location_ids(module, theforeman, locations)
 
 
-    for key in ['dns_primary', 'dns_secondary', 'gateway', 'ipam', 'boot_mode', 'mask', 'network', 'network_address',
-                'vlanid']:
+    for key in ['dns_primary', 'dns_secondary', 'gateway', 'ipam', 'boot_mode', 'network', 'vlanid']:
         if key in module.params:
             data[key] = module.params[key]
+    if module.params['mask']:
+        data['mask'] = module.params['mask']
     if module.params['network_type']:
         data['network_type'] = module.params['network_type']
     if module.params['cidr']:
